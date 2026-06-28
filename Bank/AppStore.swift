@@ -1,12 +1,12 @@
 import SwiftUI
 import FamilyControls
 import ManagedSettings
-import DeviceActivity
 
 final class AppStore: ObservableObject {
     private let defaults = UserDefaults(suiteName: "group.com.bank.app") ?? .standard
     private let settingsStore = ManagedSettingsStore()
 
+    // balance is stored in seconds
     @Published var balance: Int = 0
     @Published var dailyFocusSeconds: Int = 0
     @Published var log: [Session] = []
@@ -63,7 +63,7 @@ final class AppStore: ObservableObject {
             selectedApps = decoded
         }
 
-        if !selectedApps.applicationTokens.isEmpty {
+        if !selectedApps.applicationTokens.isEmpty || !selectedApps.categoryTokens.isEmpty {
             applyShield()
         }
     }
@@ -127,15 +127,15 @@ final class AppStore: ObservableObject {
         focusTimer = nil
         focusRunning = false
 
-        let earned = focusElapsed / 60
+        let earnedMinutes = focusElapsed / 60
         dailyFocusSeconds += focusElapsed
 
-        if earned > 0 {
-            balance += earned
+        if earnedMinutes > 0 {
+            balance += earnedMinutes * 60
             let session = Session(
                 date: Date(),
                 durationSeconds: focusElapsed,
-                earned: earned
+                earnedMinutes: earnedMinutes
             )
             log.insert(session, at: 0)
         }
@@ -157,7 +157,7 @@ final class AppStore: ObservableObject {
     private func startScrolling() {
         scrolling = true
         removeShield()
-        scrollTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+        scrollTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             DispatchQueue.main.async {
                 guard let self else { return }
                 if self.balance <= 1 {
@@ -166,7 +166,7 @@ final class AppStore: ObservableObject {
                 } else {
                     self.balance -= 1
                 }
-                self.save()
+                self.defaults.set(self.balance, forKey: "balance")
             }
         }
     }
@@ -192,7 +192,7 @@ struct Session: Codable, Identifiable {
     var id = UUID()
     let date: Date
     let durationSeconds: Int
-    let earned: Int
+    let earnedMinutes: Int
 
     var formattedDate: String {
         let f = DateFormatter()

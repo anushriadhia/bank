@@ -102,10 +102,10 @@ struct ContentView: View {
         return String(format: "%02d:%02d", m, s)
     }
 
-    private func formatBalance(_ minutes: Int) -> String {
-        let h = minutes / 60
-        let m = minutes % 60
-        return String(format: "%02d:%02d", h, m)
+    private func formatBalance(_ totalSeconds: Int) -> String {
+        let m = totalSeconds / 60
+        let s = totalSeconds % 60
+        return String(format: "%02d:%02d", m, s)
     }
 }
 
@@ -134,7 +134,7 @@ struct LogOverlay: View {
                                     Spacer()
                                     Text(session.formattedDuration)
                                     Spacer()
-                                    Text("+\(session.earned)m")
+                                    Text("+\(session.earnedMinutes)m")
                                 }
                                 .font(.system(size: 14, design: .monospaced))
                                 .foregroundColor(Color(white: 0.53))

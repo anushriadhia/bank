@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(npx --yes create-expo-app@latest /Users/anushri/workspace/bank --template blank-typescript)",
-      "Bash(mv /Users/anushri/workspace/bank/.claude /tmp/.claude-backup)",
-      "Bash(mv /tmp/.claude-backup /Users/anushri/workspace/bank/.claude)"
-    ]
-  }
-}
