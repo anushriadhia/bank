@@ -69,10 +69,12 @@ struct ContentView: View {
 
                 // MARK: - Bottom buttons
                 VStack(spacing: 24) {
-                    Button(action: { showAppPicker = true }) {
-                        Text(store.selectedApps.applicationTokens.isEmpty ? "Select Apps to Block" : "Change Blocked Apps")
-                            .font(.system(size: 14, design: .monospaced))
-                            .foregroundColor(Color(white: 0.4))
+                    if store.authorized {
+                        Button(action: { showAppPicker = true }) {
+                            Text(store.selectedApps.applicationTokens.isEmpty ? "Select Apps to Block" : "Change Blocked Apps")
+                                .font(.system(size: 14, design: .monospaced))
+                                .foregroundColor(Color(white: 0.4))
+                        }
                     }
 
                     Button(action: { showLog = true }) {

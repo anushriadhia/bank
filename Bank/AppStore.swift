@@ -6,7 +6,6 @@ final class AppStore: ObservableObject {
     private let defaults = UserDefaults(suiteName: "group.com.bank.app") ?? .standard
     private let settingsStore = ManagedSettingsStore()
 
-    // balance is stored in seconds
     @Published var balance: Int = 0
     @Published var dailyFocusSeconds: Int = 0
     @Published var log: [Session] = []
@@ -58,13 +57,14 @@ final class AppStore: ObservableObject {
             dailyFocusSeconds = decoded.seconds
         }
 
-        if let data = defaults.data(forKey: "selectedApps"),
-           let decoded = try? JSONDecoder().decode(FamilyActivitySelection.self, from: data) {
-            selectedApps = decoded
-        }
-
-        if !selectedApps.applicationTokens.isEmpty || !selectedApps.categoryTokens.isEmpty {
-            applyShield()
+        if authorized {
+            if let data = defaults.data(forKey: "selectedApps"),
+               let decoded = try? JSONDecoder().decode(FamilyActivitySelection.self, from: data) {
+                selectedApps = decoded
+            }
+            if !selectedApps.applicationTokens.isEmpty || !selectedApps.categoryTokens.isEmpty {
+                applyShield()
+            }
         }
     }
 
@@ -89,6 +89,7 @@ final class AppStore: ObservableObject {
     // MARK: - Shield management
 
     func applyShield() {
+        guard authorized else { return }
         let applications = selectedApps.applicationTokens
         let categories = selectedApps.categoryTokens
         if applications.isEmpty && categories.isEmpty { return }
@@ -97,6 +98,7 @@ final class AppStore: ObservableObject {
     }
 
     func removeShield() {
+        guard authorized else { return }
         settingsStore.shield.applications = nil
         settingsStore.shield.applicationCategories = nil
     }

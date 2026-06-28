@@ -17,6 +17,9 @@ targets:
       - Bank
     entitlements:
       path: Bank/Bank.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.bank.app
     info:
       path: Bank/Info.plist
       properties:
@@ -39,6 +42,9 @@ targets:
       - ShieldConfigurationExtension
     entitlements:
       path: ShieldConfigurationExtension/ShieldConfigurationExtension.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.bank.app
     info:
       path: ShieldConfigurationExtension/Info.plist
     settings:
@@ -52,6 +58,9 @@ targets:
       - DeviceActivityMonitorExtension
     entitlements:
       path: DeviceActivityMonitorExtension/DeviceActivityMonitorExtension.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.bank.app
     info:
       path: DeviceActivityMonitorExtension/Info.plist
     settings:
