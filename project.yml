@@ -19,7 +19,7 @@ targets:
       path: Bank/Bank.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.com.bank.app
+          - group.com.anushriadhia.bank
     info:
       path: Bank/Info.plist
       properties:
@@ -29,7 +29,7 @@ targets:
         UIUserInterfaceStyle: Dark
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.bank.app
+        PRODUCT_BUNDLE_IDENTIFIER: com.anushriadhia.bank
         INFOPLIST_KEY_NSFamilyControlsUsageDescription: "Bank needs Screen Time access to block apps during focus sessions and unblock them when you spend your balance."
     dependencies:
       - target: ShieldConfigurationExtension
@@ -44,12 +44,16 @@ targets:
       path: ShieldConfigurationExtension/ShieldConfigurationExtension.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.com.bank.app
+          - group.com.anushriadhia.bank
     info:
       path: ShieldConfigurationExtension/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.ManagedSettingsUI.shield-configuration
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShieldConfigurationExtension
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.bank.app.ShieldConfiguration
+        PRODUCT_BUNDLE_IDENTIFIER: com.anushriadhia.bank.ShieldConfiguration
 
   DeviceActivityMonitorExtension:
     type: app-extension
@@ -60,9 +64,13 @@ targets:
       path: DeviceActivityMonitorExtension/DeviceActivityMonitorExtension.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.com.bank.app
+          - group.com.anushriadhia.bank
     info:
       path: DeviceActivityMonitorExtension/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.deviceactivity.monitor
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.bank.app.DeviceActivityMonitor
+        PRODUCT_BUNDLE_IDENTIFIER: com.anushriadhia.bank.DeviceActivityMonitor

@@ -261,7 +261,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bank.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.anushriadhia.bank;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -336,7 +336,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bank.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.anushriadhia.bank;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -353,7 +353,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bank.app.DeviceActivityMonitor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.anushriadhia.bank.DeviceActivityMonitor;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -370,7 +370,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bank.app.DeviceActivityMonitor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.anushriadhia.bank.DeviceActivityMonitor;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -450,7 +450,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bank.app.ShieldConfiguration;
+				PRODUCT_BUNDLE_IDENTIFIER = com.anushriadhia.bank.ShieldConfiguration;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -467,7 +467,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bank.app.ShieldConfiguration;
+				PRODUCT_BUNDLE_IDENTIFIER = com.anushriadhia.bank.ShieldConfiguration;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

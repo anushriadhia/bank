@@ -1,9 +1,10 @@
 import SwiftUI
 import FamilyControls
 import ManagedSettings
+import Combine
 
 final class AppStore: ObservableObject {
-    private let defaults = UserDefaults(suiteName: "group.com.bank.app") ?? .standard
+    private let defaults = UserDefaults(suiteName: "group.com.anushriadhia.bank") ?? .standard
     private let settingsStore = ManagedSettingsStore()
 
     @Published var balance: Int = 0
@@ -18,14 +19,22 @@ final class AppStore: ObservableObject {
 
     @Published var selectedApps = FamilyActivitySelection()
 
-    private var focusTimer: Timer?
-    private var scrollTimer: Timer?
+    private var focusStartDate: Date?
+    private var scrollStartDate: Date?
+    private var balanceAtScrollStart: Int = 0
+
+    private var displayTimer: Timer?
+    private var cancellables = Set<AnyCancellable>()
 
     var unlocked: Bool { dailyFocusSeconds >= 900 }
     var secondsToUnlock: Int { max(0, 900 - dailyFocusSeconds) }
 
     init() {
         load()
+
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in self?.syncWithClock() }
+            .store(in: &cancellables)
     }
 
     // MARK: - Authorization
@@ -103,6 +112,39 @@ final class AppStore: ObservableObject {
         settingsStore.shield.applicationCategories = nil
     }
 
+    // MARK: - Clock sync (handles background/lock)
+
+    private func syncWithClock() {
+        if focusRunning, let start = focusStartDate {
+            focusElapsed = Int(Date().timeIntervalSince(start))
+        }
+        if scrolling, let start = scrollStartDate {
+            let elapsed = Int(Date().timeIntervalSince(start))
+            let newBalance = max(0, balanceAtScrollStart - elapsed)
+            balance = newBalance
+            defaults.set(balance, forKey: "balance")
+            if newBalance <= 0 {
+                stopScrolling()
+            }
+        }
+    }
+
+    private func startDisplayTimer() {
+        displayTimer?.invalidate()
+        displayTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.syncWithClock()
+            }
+        }
+    }
+
+    private func stopDisplayTimer() {
+        if !focusRunning && !scrolling {
+            displayTimer?.invalidate()
+            displayTimer = nil
+        }
+    }
+
     // MARK: - Focus timer
 
     func toggleFocus() {
@@ -115,19 +157,16 @@ final class AppStore: ObservableObject {
 
     private func startFocus() {
         focusElapsed = 0
+        focusStartDate = Date()
         focusRunning = true
         applyShield()
-        focusTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-            DispatchQueue.main.async {
-                self?.focusElapsed += 1
-            }
-        }
+        startDisplayTimer()
     }
 
     private func stopFocus() {
-        focusTimer?.invalidate()
-        focusTimer = nil
         focusRunning = false
+        syncWithClock()
+        focusStartDate = nil
 
         let earnedMinutes = focusElapsed / 60
         dailyFocusSeconds += focusElapsed
@@ -144,6 +183,7 @@ final class AppStore: ObservableObject {
 
         save()
         focusElapsed = 0
+        stopDisplayTimer()
     }
 
     // MARK: - Scrolling (spending)
@@ -158,27 +198,18 @@ final class AppStore: ObservableObject {
 
     private func startScrolling() {
         scrolling = true
+        scrollStartDate = Date()
+        balanceAtScrollStart = balance
         removeShield()
-        scrollTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-            DispatchQueue.main.async {
-                guard let self else { return }
-                if self.balance <= 1 {
-                    self.balance = 0
-                    self.stopScrolling()
-                } else {
-                    self.balance -= 1
-                }
-                self.defaults.set(self.balance, forKey: "balance")
-            }
-        }
+        startDisplayTimer()
     }
 
     private func stopScrolling() {
-        scrollTimer?.invalidate()
-        scrollTimer = nil
         scrolling = false
+        scrollStartDate = nil
         applyShield()
         save()
+        stopDisplayTimer()
     }
 
     // MARK: - Helpers
