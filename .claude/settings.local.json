@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes create-expo-app@latest /Users/anushri/workspace/bank --template blank-typescript)",
+      "Bash(mv /Users/anushri/workspace/bank/.claude /tmp/.claude-backup)",
+      "Bash(mv /tmp/.claude-backup /Users/anushri/workspace/bank/.claude)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npx expo *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8081)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(kill 20195)",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__browser_batch",
+      "mcp__Claude_in_Chrome__read_page",
+      "mcp__Claude_in_Chrome__read_console_messages",
+      "mcp__Claude_in_Chrome__javascript_tool",
+      "Bash(git init *)",
+      "Bash(git remote *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(gh auth *)",
+      "Bash(git config *)",
+      "Bash(xcode-select -p)",
+      "Bash(brew install *)",
+      "Bash(pkill -f \"expo start\")"
+    ]
+  }
+}

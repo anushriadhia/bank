@@ -1,0 +1,59 @@
+name: Bank
+options:
+  bundleIdPrefix: com.bank
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "15.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+
+targets:
+  Bank:
+    type: application
+    platform: iOS
+    sources:
+      - Bank
+    entitlements:
+      path: Bank/Bank.entitlements
+    info:
+      path: Bank/Info.plist
+      properties:
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIUserInterfaceStyle: Dark
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bank.app
+        INFOPLIST_KEY_NSFamilyControlsUsageDescription: "Bank needs Screen Time access to block apps during focus sessions and unblock them when you spend your balance."
+    dependencies:
+      - target: ShieldConfigurationExtension
+      - target: DeviceActivityMonitorExtension
+
+  ShieldConfigurationExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - ShieldConfigurationExtension
+    entitlements:
+      path: ShieldConfigurationExtension/ShieldConfigurationExtension.entitlements
+    info:
+      path: ShieldConfigurationExtension/Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bank.app.ShieldConfiguration
+
+  DeviceActivityMonitorExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - DeviceActivityMonitorExtension
+    entitlements:
+      path: DeviceActivityMonitorExtension/DeviceActivityMonitorExtension.entitlements
+    info:
+      path: DeviceActivityMonitorExtension/Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bank.app.DeviceActivityMonitor
