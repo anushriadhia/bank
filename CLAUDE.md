@@ -25,3 +25,4 @@ You are a senior iOS engineer. Apply these principles to every change:
 - **Ask before committing or pushing.** Always confirm with the user before running `git commit` or `git push`.
 - **Keep the README current.** When behavior or architecture changes, update `README.md` to reflect it.
 - **Maintain tests.** `BankTests/` covers happy-path logic in `AppStore`. When adding or changing behavior, update the tests to match. Don't leave tests broken or stale.
+- **Prefer platform UI components.** Always reach for SwiftUI's built-in components (`Grid`, `Table`, `Picker`, `List`, `Form`, etc.) before building custom layouts. Custom layout code is harder to maintain and rarely handles edge cases as well as the platform does.
