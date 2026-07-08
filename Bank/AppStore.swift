@@ -79,7 +79,6 @@ final class AppStore: ObservableObject {
         }
 
         activities = defaults.stringArray(forKey: "activities") ?? []
-        selectedActivity = defaults.string(forKey: "lastActivity")
 
         if authorized {
             if let data = defaults.data(forKey: "selectedApps"),
@@ -236,7 +235,6 @@ final class AppStore: ObservableObject {
 
     func selectActivity(_ name: String?) {
         selectedActivity = name
-        defaults.set(name, forKey: "lastActivity")
     }
 
     func updateSessionActivity(sessionId: UUID, activity: String?) {

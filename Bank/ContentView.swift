@@ -25,18 +25,6 @@ struct ContentView: View {
                         .foregroundColor(store.bankDisplay < 0 ? Color(white: 0.38) : Color(white: 0.55))
                         .tracking(4)
 
-                    if store.unlocked {
-                        if store.balance <= 0 && !store.scrolling {
-                            Text("Bank empty")
-                                .font(.system(size: 14, design: .monospaced))
-                                .foregroundColor(Color(white: 0.4))
-                        } else {
-                            Button(store.scrolling ? "Stop Scrolling" : "Start Scrolling", action: store.toggleScrolling)
-                                .buttonStyle(.bordered)
-                                .tint(.white)
-                                .font(.system(size: 16, design: .monospaced))
-                        }
-                    }
                 }
                 .padding(.top, 60)
 
@@ -45,30 +33,40 @@ struct ContentView: View {
                 // MARK: - Focus Timer
                 VStack(spacing: 20) {
                     // MARK: - Activity Picker
-                    HStack(spacing: 10) {
-                        Text("Activity")
-                            .font(.system(size: 11, design: .monospaced))
-                            .foregroundColor(Color(white: 0.35))
-                            .tracking(2)
-
+                    Menu {
                         Picker("", selection: Binding(
                             get: { store.selectedActivity ?? "" },
-                            set: { store.selectActivity($0.isEmpty ? nil : $0) }
+                            set: { newValue in
+                                if newValue == "__new__" {
+                                    showAddActivity = true
+                                } else {
+                                    store.selectActivity(newValue.isEmpty ? nil : newValue)
+                                }
+                            }
                         )) {
-                            Text("None").tag("")
+                            Text("Select activity").tag("")
                             ForEach(store.activities, id: \.self) { activity in
                                 Text(activity).tag(activity)
                             }
+                            Divider()
+                            Text("+ New Activity").tag("__new__")
                         }
-                        .pickerStyle(.menu)
-                        .font(.system(size: 14, design: .monospaced))
+                    } label: {
+                        HStack(spacing: 8) {
+                            Text("Activity")
+                                .foregroundColor(Color(white: 0.45))
+                                .tracking(2)
 
-                        Button(action: { showAddActivity = true }) {
-                            Image(systemName: "plus")
-                                .font(.system(size: 12))
-                                .foregroundColor(Color(white: 0.35))
+                            Text(store.selectedActivity ?? "Select activity")
+                                .foregroundColor(Color(white: 0.7))
+
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.system(size: 10))
+                                .foregroundColor(Color(white: 0.45))
                         }
+                        .font(.system(size: 14, design: .monospaced))
                     }
+                    .id(store.selectedActivity ?? "")
 
                     Text(formatTime(store.focusElapsed))
                         .font(.system(size: 64, weight: .regular, design: .monospaced))
@@ -93,11 +91,26 @@ struct ContentView: View {
                         .foregroundColor(Color(white: 0.4))
                     }
 
-                    Button("Show Log") { showLog = true }
-                        .font(.system(size: 14, design: .monospaced))
+                    Button(action: { showLog = true }) {
+                        VStack(spacing: 6) {
+                            Text("Show Log")
+                                .font(.system(size: 14, design: .monospaced))
+                            Image(systemName: "chevron.compact.down")
+                                .font(.system(size: 18))
+                        }
                         .foregroundColor(Color(white: 0.4))
+                    }
                 }
                 .padding(.bottom, 20)
+                .contentShape(Rectangle())
+                .gesture(
+                    DragGesture(minimumDistance: 20)
+                        .onEnded { value in
+                            if value.translation.height < -40 {
+                                showLog = true
+                            }
+                        }
+                )
             }
             .padding(.horizontal, 32)
         }
@@ -195,7 +208,7 @@ struct LogSheet: View {
                                     }
                                     .pickerStyle(.menu)
                                     .font(.system(size: 14, design: .monospaced))
-                                    .foregroundColor(session.activity == nil ? Color(white: 0.35) : Color(white: 0.53))
+                                    .tint(session.activity == nil ? Color(white: 0.35) : Color(white: 0.53))
                                 }
                                 .font(.system(size: 14, design: .monospaced))
                                 .foregroundColor(Color(white: 0.53))
