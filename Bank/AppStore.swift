@@ -26,8 +26,8 @@ final class AppStore: ObservableObject {
     private var displayTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
 
-    // Debt = seconds still needed to unlock today
-    private var debt: Int { max(0, 900 - dailyFocusSeconds - (focusRunning ? focusElapsed : 0)) }
+    // Debt = seconds still needed to unlock today (only updates when sessions complete)
+    private var debt: Int { max(0, 900 - dailyFocusSeconds) }
 
     // What the bank display shows: negative while paying unlock debt, positive when spendable
     var bankDisplay: Int { balance - debt }
