@@ -18,7 +18,7 @@ Bank treats attention like currency. Focus sessions deposit minutes into your ba
 
 ## Architecture
 
-Native SwiftUI app with two extensions. No third-party dependencies.
+Native SwiftUI app with three extensions. No third-party dependencies.
 
 ### Targets
 
@@ -27,12 +27,14 @@ Native SwiftUI app with two extensions. No third-party dependencies.
 | `Bank` | Main app — UI, timer logic, shield management |
 | `ShieldConfigurationExtension` | Customizes the block screen shown over shielded apps |
 | `DeviceActivityMonitorExtension` | Handles scheduled device activity events |
+| `BankWidgetExtension` | Live Activity showing the current focus/scrolling timer on the Lock Screen and Dynamic Island |
 
 ### Frameworks
 
 - **FamilyControls** — authorization to use Screen Time APIs, `FamilyActivityPicker` for app selection
 - **ManagedSettings** — `ManagedSettingsStore` to apply/remove shields on selected apps
 - **DeviceActivity** — extension point for monitoring device activity schedules
+- **ActivityKit** — Live Activities for the Lock Screen / Dynamic Island
 
 ### State
 
@@ -53,6 +55,7 @@ The daily focus tracker stores a date string (`YYYY-MM-DD`). On load, if the sto
 - **Earning**: On focus stop, `floor(elapsed / 60)` minutes are added to balance as seconds. Sessions under 60 seconds earn nothing but still count toward the daily unlock.
 - **Spending**: "Start Scrolling" removes shields and starts a 1-second interval that decrements balance. Auto-stops and re-shields at zero.
 - **Shielding**: Focus start and scrolling stop both call `applyShield()`. Scrolling start calls `removeShield()`. The shield screen says "Blocked — Open Bank to earn more time."
+- **Live Activity**: starting/stopping a focus or scrolling session starts/ends an ActivityKit Live Activity mirroring that session's timer. Focus shows a count-up from `focusStartDate`; scrolling shows a deterministic count-down from `balanceAtScrollStart` seconds, ending at a fixed date computed once at session start — the widget's `Text(date:style:.timer)` / `Text(timerInterval:countsDown:)` views update themselves live without further app involvement.
 
 ### File layout
 
@@ -74,6 +77,14 @@ DeviceActivityMonitorExtension/
   DeviceActivityMonitorExtension.entitlements
   Info.plist
 
+BankWidgetExtension/
+  BankWidgetsBundle.swift     — @main WidgetBundle entry point
+  BankActivityWidget.swift    — Live Activity lock-screen + Dynamic Island views
+  Info.plist
+
+Shared/
+  BankActivityAttributes.swift — ActivityAttributes/ContentState shared by Bank and BankWidgetExtension
+
 project.yml                 — XcodeGen spec (generates Bank.xcodeproj)
 ```
 
@@ -82,7 +93,7 @@ project.yml                 — XcodeGen spec (generates Bank.xcodeproj)
 ### Prerequisites
 
 - Xcode 15+
-- iOS 16+ device (Screen Time APIs don't work in Simulator)
+- iOS 16.2+ device (Screen Time APIs don't work in Simulator)
 - Apple Developer account with FamilyControls capability
 
 ### Build
@@ -96,9 +107,9 @@ open Bank.xcodeproj
 ```
 
 In Xcode:
-1. Set your development team under Signing & Capabilities for all three targets
+1. Set your development team under Signing & Capabilities for all four targets
 2. Enable the "Family Controls" capability on the Bank target (requires applying to Apple for distribution; works in development without approval)
-3. Add the "App Groups" capability with `group.com.bank.app` to all three targets
+3. Add the "App Groups" capability with `group.com.bank.app` to `Bank`, `ShieldConfigurationExtension`, and `DeviceActivityMonitorExtension` (`BankWidgetExtension` doesn't need it — Live Activity content is pushed to it directly by ActivityKit, not read from shared storage)
 4. Build and run on a physical device
 
 ### Entitlement note

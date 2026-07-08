@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,11 +13,23 @@
 		50B178917EEC863DEC0B04A8 /* DeviceActivityMonitorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5BB8D682714E9971CFA184 /* DeviceActivityMonitorExtension.swift */; };
 		52A32A892023ACBE51527F77 /* BankApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 480388682C746CD2A8644E2E /* BankApp.swift */; };
 		62B309095ED3B795AD8CD4EC /* ShieldConfigurationExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 218E83039FA637F65F644469 /* ShieldConfigurationExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		68FC3EFE848D7B45054C4FCE /* BankActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F6D770302FE50F1C365961 /* BankActivityAttributes.swift */; };
 		9EA8302C5D7F3AD24C3FB541 /* BankTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2020380163E2BF37D2912A8F /* BankTests.swift */; };
 		AA740062EE5D4163C597D61C /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBB81B031F1A0B69707127C /* AppStore.swift */; };
+		ABFDB7827D331A8422DE3619 /* BankActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F6D770302FE50F1C365961 /* BankActivityAttributes.swift */; };
+		B3AD6F65DA98D3E88675D4C3 /* BankActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27145FC6D3D5E0F04AFF1B96 /* BankActivityWidget.swift */; };
+		D56C58C9B8B25A196BB27421 /* BankWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A1926ABC58FAF9BE44D53C /* BankWidgetsBundle.swift */; };
+		E590E5815015BC563381E37A /* BankWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EDF683FD38AD4FEC09CD4D02 /* BankWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		235CC951BDD864CA8D64B88A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3A5AFC30EDF0EE143A119ADB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E847AD7ADBCF0F3DD8E978F2;
+			remoteInfo = BankWidgetExtension;
+		};
 		848388E1BD3DAFD576228243 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3A5AFC30EDF0EE143A119ADB /* Project object */;
@@ -50,6 +62,7 @@
 			files = (
 				62B309095ED3B795AD8CD4EC /* ShieldConfigurationExtension.appex in Embed Foundation Extensions */,
 				01C8942DA85C9984D29AB739 /* DeviceActivityMonitorExtension.appex in Embed Foundation Extensions */,
+				E590E5815015BC563381E37A /* BankWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -57,30 +70,44 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		013CD95815B371E909392345 /* Bank.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bank.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		013CD95815B371E909392345 /* Bank.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Bank.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		06A1926ABC58FAF9BE44D53C /* BankWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankWidgetsBundle.swift; sourceTree = "<group>"; };
 		158842DF2D92AC5277A1A8C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		16F6D770302FE50F1C365961 /* BankActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankActivityAttributes.swift; sourceTree = "<group>"; };
 		2020380163E2BF37D2912A8F /* BankTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankTests.swift; sourceTree = "<group>"; };
-		218E83039FA637F65F644469 /* ShieldConfigurationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldConfigurationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		218E83039FA637F65F644469 /* ShieldConfigurationExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = ShieldConfigurationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		27145FC6D3D5E0F04AFF1B96 /* BankActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankActivityWidget.swift; sourceTree = "<group>"; };
 		2DBB81B031F1A0B69707127C /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
 		480388682C746CD2A8644E2E /* BankApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankApp.swift; sourceTree = "<group>"; };
 		5F5BB8D682714E9971CFA184 /* DeviceActivityMonitorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceActivityMonitorExtension.swift; sourceTree = "<group>"; };
-		792DA847C16642F3F43DF77B /* DeviceActivityMonitorExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DeviceActivityMonitorExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		792DA847C16642F3F43DF77B /* DeviceActivityMonitorExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DeviceActivityMonitorExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		988BE93ECDC6001E7260C933 /* DeviceActivityMonitorExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeviceActivityMonitorExtension.entitlements; sourceTree = "<group>"; };
 		9C00067092843CAF502E6EA7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		ADEB91A2E12A0FE19F9D2E46 /* ShieldConfigurationExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShieldConfigurationExtension.entitlements; sourceTree = "<group>"; };
 		C80BCB38754E1840B596973F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CAB7498B712B38EEC318B656 /* ShieldConfigurationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShieldConfigurationExtension.swift; sourceTree = "<group>"; };
+		CEE833C3A08F9430AEF2AC82 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D8B72A15D65698099A1B1C6F /* Bank.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Bank.entitlements; sourceTree = "<group>"; };
 		DD8265C4AA58AF991AA604AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		EFD7E798EA157AAD87DFB308 /* BankTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BankTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDF683FD38AD4FEC09CD4D02 /* BankWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BankWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		EFD7E798EA157AAD87DFB308 /* BankTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BankTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		2655F245894C38ED78FCD49C /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				16F6D770302FE50F1C365961 /* BankActivityAttributes.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		348C4B5856E3BA5FF54D3A93 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				013CD95815B371E909392345 /* Bank.app */,
 				EFD7E798EA157AAD87DFB308 /* BankTests.xctest */,
+				EDF683FD38AD4FEC09CD4D02 /* BankWidgetExtension.appex */,
 				792DA847C16642F3F43DF77B /* DeviceActivityMonitorExtension.appex */,
 				218E83039FA637F65F644469 /* ShieldConfigurationExtension.appex */,
 			);
@@ -100,7 +127,9 @@
 			children = (
 				D3FB2569ED4464B8F092C4D2 /* Bank */,
 				6BCCA4C2D0E09833D65DA06F /* BankTests */,
+				BEA93CDCCE3451AB4A2D145F /* BankWidgetExtension */,
 				BB8AF8F2AC1B451E6A84B399 /* DeviceActivityMonitorExtension */,
+				2655F245894C38ED78FCD49C /* Shared */,
 				BE44C4FD7BAE21C7D44FD1ED /* ShieldConfigurationExtension */,
 				348C4B5856E3BA5FF54D3A93 /* Products */,
 			);
@@ -124,6 +153,16 @@
 				CAB7498B712B38EEC318B656 /* ShieldConfigurationExtension.swift */,
 			);
 			path = ShieldConfigurationExtension;
+			sourceTree = "<group>";
+		};
+		BEA93CDCCE3451AB4A2D145F /* BankWidgetExtension */ = {
+			isa = PBXGroup;
+			children = (
+				27145FC6D3D5E0F04AFF1B96 /* BankActivityWidget.swift */,
+				06A1926ABC58FAF9BE44D53C /* BankWidgetsBundle.swift */,
+				CEE833C3A08F9430AEF2AC82 /* Info.plist */,
+			);
+			path = BankWidgetExtension;
 			sourceTree = "<group>";
 		};
 		D3FB2569ED4464B8F092C4D2 /* Bank */ = {
@@ -153,8 +192,6 @@
 				9428E520715D83EF349300C5 /* PBXTargetDependency */,
 			);
 			name = BankTests;
-			packageProductDependencies = (
-			);
 			productName = BankTests;
 			productReference = EFD7E798EA157AAD87DFB308 /* BankTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -171,10 +208,9 @@
 			dependencies = (
 				3A635175F0C41204B340F3AD /* PBXTargetDependency */,
 				A2C832F3C91D4ED08EC2DB03 /* PBXTargetDependency */,
+				C477FBEC14D057DC6501897A /* PBXTargetDependency */,
 			);
 			name = Bank;
-			packageProductDependencies = (
-			);
 			productName = Bank;
 			productReference = 013CD95815B371E909392345 /* Bank.app */;
 			productType = "com.apple.product-type.application";
@@ -190,8 +226,6 @@
 			dependencies = (
 			);
 			name = DeviceActivityMonitorExtension;
-			packageProductDependencies = (
-			);
 			productName = DeviceActivityMonitorExtension;
 			productReference = 792DA847C16642F3F43DF77B /* DeviceActivityMonitorExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -207,10 +241,23 @@
 			dependencies = (
 			);
 			name = ShieldConfigurationExtension;
-			packageProductDependencies = (
-			);
 			productName = ShieldConfigurationExtension;
 			productReference = 218E83039FA637F65F644469 /* ShieldConfigurationExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		E847AD7ADBCF0F3DD8E978F2 /* BankWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DF925547EA1C55A4D92C9970 /* Build configuration list for PBXNativeTarget "BankWidgetExtension" */;
+			buildPhases = (
+				259D32CECD6B21FF5C8E012A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BankWidgetExtension;
+			productName = BankWidgetExtension;
+			productReference = EDF683FD38AD4FEC09CD4D02 /* BankWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -221,8 +268,11 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = 54DB960BB5B5ABD76622B3B0 /* Build configuration list for PBXProject "Bank" */;
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -230,14 +280,12 @@
 				en,
 			);
 			mainGroup = B352417285D223AC8F2471B6;
-			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
-			productRefGroup = 348C4B5856E3BA5FF54D3A93 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				334B59AB8A4D83270D80ADDD /* Bank */,
 				0668FA4522EA363A59CD535B /* BankTests */,
+				E847AD7ADBCF0F3DD8E978F2 /* BankWidgetExtension */,
 				6AA9B51BB8C70C86E9C57A68 /* DeviceActivityMonitorExtension */,
 				AE555FF8F4D4E01A2E99EF19 /* ShieldConfigurationExtension */,
 			);
@@ -245,11 +293,22 @@
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		259D32CECD6B21FF5C8E012A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68FC3EFE848D7B45054C4FCE /* BankActivityAttributes.swift in Sources */,
+				B3AD6F65DA98D3E88675D4C3 /* BankActivityWidget.swift in Sources */,
+				D56C58C9B8B25A196BB27421 /* BankWidgetsBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3BE21F12D32E474AC5BFC282 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				AA740062EE5D4163C597D61C /* AppStore.swift in Sources */,
+				ABFDB7827D331A8422DE3619 /* BankActivityAttributes.swift in Sources */,
 				52A32A892023ACBE51527F77 /* BankApp.swift in Sources */,
 				20EE86AA195A16698AE68A43 /* ContentView.swift in Sources */,
 			);
@@ -297,6 +356,11 @@
 			target = 6AA9B51BB8C70C86E9C57A68 /* DeviceActivityMonitorExtension */;
 			targetProxy = F49815AF43A3F566BAF2B23F /* PBXContainerItemProxy */;
 		};
+		C477FBEC14D057DC6501897A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E847AD7ADBCF0F3DD8E978F2 /* BankWidgetExtension */;
+			targetProxy = 235CC951BDD864CA8D64B88A /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -304,7 +368,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = 56K8S9J6LZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -318,13 +381,27 @@
 			};
 			name = Debug;
 		};
+		29222DB6AAFEDFCDB479A5EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = BankWidgetExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.anushriadhia.bank.BankWidget;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		350FDABC1430F5ECCD435B2D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Bank/Bank.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 56K8S9J6LZ;
 				INFOPLIST_FILE = Bank/Info.plist;
 				INFOPLIST_KEY_NSFamilyControlsUsageDescription = "Bank needs Screen Time access to block apps during focus sessions and unblock them when you spend your balance.";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -382,7 +459,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -399,7 +476,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Bank/Bank.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 56K8S9J6LZ;
 				INFOPLIST_FILE = Bank/Info.plist;
 				INFOPLIST_KEY_NSFamilyControlsUsageDescription = "Bank needs Screen Time access to block apps during focus sessions and unblock them when you spend your balance.";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -416,7 +492,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = DeviceActivityMonitorExtension/DeviceActivityMonitorExtension.entitlements;
-				DEVELOPMENT_TEAM = 56K8S9J6LZ;
 				INFOPLIST_FILE = DeviceActivityMonitorExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -429,11 +504,25 @@
 			};
 			name = Release;
 		};
+		C2AF1FAB55B8BB9B061436DB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = BankWidgetExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.anushriadhia.bank.BankWidget;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		CCFE2147EC8D0EDE7F62BE46 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = DeviceActivityMonitorExtension/DeviceActivityMonitorExtension.entitlements;
-				DEVELOPMENT_TEAM = 56K8S9J6LZ;
 				INFOPLIST_FILE = DeviceActivityMonitorExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -497,7 +586,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -513,7 +602,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = 56K8S9J6LZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -531,7 +619,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShieldConfigurationExtension/ShieldConfigurationExtension.entitlements;
-				DEVELOPMENT_TEAM = 56K8S9J6LZ;
 				INFOPLIST_FILE = ShieldConfigurationExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -548,7 +635,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShieldConfigurationExtension/ShieldConfigurationExtension.entitlements;
-				DEVELOPMENT_TEAM = 56K8S9J6LZ;
 				INFOPLIST_FILE = ShieldConfigurationExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -605,6 +691,15 @@
 			buildConfigurations = (
 				CCFE2147EC8D0EDE7F62BE46 /* Debug */,
 				A4A3F26A9468A860873CB399 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DF925547EA1C55A4D92C9970 /* Build configuration list for PBXNativeTarget "BankWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29222DB6AAFEDFCDB479A5EE /* Debug */,
+				C2AF1FAB55B8BB9B061436DB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

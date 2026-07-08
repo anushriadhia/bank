@@ -1,6 +1,7 @@
 import SwiftUI
 import FamilyControls
 import ManagedSettings
+import ActivityKit
 import Combine
 
 final class AppStore: ObservableObject {
@@ -28,6 +29,7 @@ final class AppStore: ObservableObject {
 
     private var displayTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
+    private var currentActivity: Activity<BankActivityAttributes>?
 
     private static let dailyUnlockThreshold = 900 // seconds of focus required to unlock (15 min)
 
@@ -167,6 +169,7 @@ final class AppStore: ObservableObject {
         focusStartDate = Date()
         focusRunning = true
         applyShield()
+        startFocusActivity()
         startDisplayTimer()
     }
 
@@ -174,6 +177,7 @@ final class AppStore: ObservableObject {
         focusRunning = false
         syncWithClock()
         focusStartDate = nil
+        endActivity()
 
         // Credit all elapsed seconds (not just whole minutes) so bank display is smooth
         let earned = focusElapsed
@@ -205,12 +209,16 @@ final class AppStore: ObservableObject {
         scrollStartDate = Date()
         balanceAtScrollStart = balance
         removeShield()
+        // Balance is spent 1:1 per second, so the moment it hits zero is known up front.
+        let activityEndDate = scrollStartDate!.addingTimeInterval(TimeInterval(balanceAtScrollStart))
+        startScrollingActivity(endDate: activityEndDate)
         startDisplayTimer()
     }
 
     private func stopScrolling() {
         scrolling = false
         scrollStartDate = nil
+        endActivity()
         applyShield()
         save()
         stopDisplayTimer()
@@ -235,6 +243,36 @@ final class AppStore: ObservableObject {
         guard let index = log.firstIndex(where: { $0.id == sessionId }) else { return }
         log[index].activity = activity
         save()
+    }
+
+    // MARK: - Live Activity
+
+    private func startFocusActivity() {
+        endActivity()
+        guard ActivityAuthorizationInfo().areActivitiesEnabled, let start = focusStartDate else { return }
+        let state = BankActivityAttributes.ContentState(kind: .focus, startDate: start, endDate: nil)
+        currentActivity = try? Activity.request(
+            attributes: BankActivityAttributes(),
+            content: ActivityContent(state: state, staleDate: nil),
+            pushType: nil
+        )
+    }
+
+    private func startScrollingActivity(endDate: Date) {
+        endActivity()
+        guard ActivityAuthorizationInfo().areActivitiesEnabled, let start = scrollStartDate else { return }
+        let state = BankActivityAttributes.ContentState(kind: .scrolling, startDate: start, endDate: endDate)
+        currentActivity = try? Activity.request(
+            attributes: BankActivityAttributes(),
+            content: ActivityContent(state: state, staleDate: endDate),
+            pushType: nil
+        )
+    }
+
+    private func endActivity() {
+        guard let activity = currentActivity else { return }
+        currentActivity = nil
+        Task { await activity.end(nil, dismissalPolicy: .immediate) }
     }
 
     // MARK: - Helpers

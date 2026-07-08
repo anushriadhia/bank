@@ -2,7 +2,7 @@ name: Bank
 options:
   bundleIdPrefix: com.bank
   deploymentTarget:
-    iOS: "16.0"
+    iOS: "16.2"
   xcodeVersion: "15.0"
   createIntermediateGroups: true
 
@@ -13,6 +13,7 @@ schemes:
         Bank: all
         ShieldConfigurationExtension: all
         DeviceActivityMonitorExtension: all
+        BankWidgetExtension: all
         BankTests: [testing]
     run:
       config: Debug
@@ -33,6 +34,7 @@ targets:
     platform: iOS
     sources:
       - Bank
+      - Shared
     entitlements:
       path: Bank/Bank.entitlements
       properties:
@@ -45,6 +47,7 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         UIUserInterfaceStyle: Dark
+        NSSupportsLiveActivities: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.anushriadhia.bank
@@ -52,6 +55,7 @@ targets:
     dependencies:
       - target: ShieldConfigurationExtension
       - target: DeviceActivityMonitorExtension
+      - target: BankWidgetExtension
 
   BankTests:
     type: bundle.unit-test
@@ -104,3 +108,18 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.anushriadhia.bank.DeviceActivityMonitor
+
+  BankWidgetExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - BankWidgetExtension
+      - Shared
+    info:
+      path: BankWidgetExtension/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.anushriadhia.bank.BankWidget
