@@ -7,7 +7,7 @@ final class AppStore: ObservableObject {
     private let defaults = UserDefaults(suiteName: "group.com.anushriadhia.bank") ?? .standard
     private let settingsStore = ManagedSettingsStore()
 
-    @Published var balance: Int = 0
+    @Published var balance: Int = 0        // total earned seconds
     @Published var dailyFocusSeconds: Int = 0
     @Published var log: [Session] = []
     @Published var authorized: Bool = false
@@ -26,8 +26,14 @@ final class AppStore: ObservableObject {
     private var displayTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
 
-    var unlocked: Bool { dailyFocusSeconds >= 900 }
-    var secondsToUnlock: Int { max(0, 900 - dailyFocusSeconds) }
+    // Debt = seconds still needed to unlock today
+    private var debt: Int { max(0, 900 - dailyFocusSeconds - (focusRunning ? focusElapsed : 0)) }
+
+    // What the bank display shows: negative while paying unlock debt, positive when spendable
+    var bankDisplay: Int { balance - debt }
+
+    // Unlocked once debt is paid
+    var unlocked: Bool { debt == 0 }
 
     init() {
         load()
@@ -112,7 +118,7 @@ final class AppStore: ObservableObject {
         settingsStore.shield.applicationCategories = nil
     }
 
-    // MARK: - Clock sync (handles background/lock)
+    // MARK: - Clock sync
 
     private func syncWithClock() {
         if focusRunning, let start = focusStartDate {
@@ -132,9 +138,7 @@ final class AppStore: ObservableObject {
     private func startDisplayTimer() {
         displayTimer?.invalidate()
         displayTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-            DispatchQueue.main.async {
-                self?.syncWithClock()
-            }
+            DispatchQueue.main.async { self?.syncWithClock() }
         }
     }
 
@@ -148,11 +152,7 @@ final class AppStore: ObservableObject {
     // MARK: - Focus timer
 
     func toggleFocus() {
-        if focusRunning {
-            stopFocus()
-        } else {
-            startFocus()
-        }
+        focusRunning ? stopFocus() : startFocus()
     }
 
     private func startFocus() {
@@ -168,16 +168,13 @@ final class AppStore: ObservableObject {
         syncWithClock()
         focusStartDate = nil
 
-        let earnedMinutes = focusElapsed / 60
-        dailyFocusSeconds += focusElapsed
+        // Credit all elapsed seconds (not just whole minutes) so bank display is smooth
+        let earned = focusElapsed
+        dailyFocusSeconds += earned
+        balance += earned
 
-        if earnedMinutes > 0 {
-            balance += earnedMinutes * 60
-            let session = Session(
-                date: Date(),
-                durationSeconds: focusElapsed,
-                earnedMinutes: earnedMinutes
-            )
+        if earned > 0 {
+            let session = Session(date: Date(), durationSeconds: earned, earnedMinutes: earned / 60)
             log.insert(session, at: 0)
         }
 
@@ -191,7 +188,7 @@ final class AppStore: ObservableObject {
     func toggleScrolling() {
         if scrolling {
             stopScrolling()
-        } else if balance > 0 {
+        } else if balance > 0 && unlocked {
             startScrolling()
         }
     }

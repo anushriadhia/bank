@@ -13,32 +13,35 @@ struct ContentView: View {
             VStack(spacing: 0) {
                 Spacer()
 
-                // MARK: - Balance
-                VStack(spacing: 20) {
-                    Text(formatBalance(store.balance))
+                // MARK: - Bank Balance
+                VStack(spacing: 12) {
+                    Text("bank")
+                        .font(.system(size: 13, design: .monospaced))
+                        .foregroundColor(Color(white: 0.35))
+                        .tracking(2)
+
+                    Text(formatSigned(store.bankDisplay))
                         .font(.system(size: 64, weight: .regular, design: .monospaced))
-                        .foregroundColor(.white)
+                        .foregroundColor(store.bankDisplay < 0 ? Color(white: 0.45) : .white)
                         .tracking(4)
 
-                    if !store.unlocked {
-                        Text("\(formatTime(store.secondsToUnlock)) to first unlock")
-                            .font(.system(size: 14, design: .monospaced))
-                            .foregroundColor(Color(white: 0.4))
-                    } else if store.balance <= 0 && !store.scrolling {
-                        Text("Bank empty")
-                            .font(.system(size: 14, design: .monospaced))
-                            .foregroundColor(Color(white: 0.4))
-                    } else {
-                        Button(action: store.toggleScrolling) {
-                            Text(store.scrolling ? "Stop Scrolling" : "Start Scrolling")
-                                .font(.system(size: 16, design: .monospaced))
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 32)
-                                .padding(.vertical, 14)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 4)
-                                        .stroke(Color(white: 0.2), lineWidth: 1)
-                                )
+                    if store.unlocked {
+                        if store.balance <= 0 && !store.scrolling {
+                            Text("Bank empty")
+                                .font(.system(size: 14, design: .monospaced))
+                                .foregroundColor(Color(white: 0.4))
+                        } else {
+                            Button(action: store.toggleScrolling) {
+                                Text(store.scrolling ? "Stop Scrolling" : "Start Scrolling")
+                                    .font(.system(size: 16, design: .monospaced))
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 32)
+                                    .padding(.vertical, 14)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .stroke(Color(white: 0.2), lineWidth: 1)
+                                    )
+                            }
                         }
                     }
                 }
@@ -104,10 +107,12 @@ struct ContentView: View {
         return String(format: "%02d:%02d", m, s)
     }
 
-    private func formatBalance(_ totalSeconds: Int) -> String {
-        let m = totalSeconds / 60
-        let s = totalSeconds % 60
-        return String(format: "%02d:%02d", m, s)
+    private func formatSigned(_ totalSeconds: Int) -> String {
+        let abs = Swift.abs(totalSeconds)
+        let m = abs / 60
+        let s = abs % 60
+        let base = String(format: "%02d:%02d", m, s)
+        return totalSeconds < 0 ? "-\(base)" : base
     }
 }
 
