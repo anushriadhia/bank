@@ -63,7 +63,7 @@ final class BankTests: XCTestCase {
         let elapsed = 120
         store.balance += elapsed
         store.dailyFocusSeconds += elapsed
-        store.log.insert(Session(date: Date(), durationSeconds: elapsed, earnedMinutes: elapsed / 60), at: 0)
+        store.log.insert(Session(date: Date(), durationSeconds: elapsed, earnedMinutes: elapsed / 60, activity: nil), at: 0)
 
         XCTAssertEqual(store.balance, 120)
         XCTAssertEqual(store.dailyFocusSeconds, 120)
@@ -76,7 +76,7 @@ final class BankTests: XCTestCase {
             let elapsed = 300
             store.balance += elapsed
             store.dailyFocusSeconds += elapsed
-            store.log.insert(Session(date: Date(), durationSeconds: elapsed, earnedMinutes: elapsed / 60), at: 0)
+            store.log.insert(Session(date: Date(), durationSeconds: elapsed, earnedMinutes: elapsed / 60, activity: nil), at: 0)
         }
 
         XCTAssertEqual(store.balance, 900)
