@@ -28,17 +28,13 @@ final class AppStore: ObservableObject {
 
     private static let dailyUnlockThreshold = 900 // seconds of focus required to unlock (15 min)
 
-    // Debt = seconds still needed to unlock today (only updates when sessions complete)
-    private var debt: Int { max(0, Self.dailyUnlockThreshold - dailyFocusSeconds) }
-
     // What the bank display shows: negative while paying unlock debt, positive when spendable.
     // Uses the fixed threshold (not the shrinking `debt`) so each focused second moves the
     // display by exactly one second — subtracting `debt` here would double-count, since debt
     // already falls by one for every second `balance` rises.
     var bankDisplay: Int { balance - Self.dailyUnlockThreshold }
 
-    // Unlocked once debt is paid
-    var unlocked: Bool { debt == 0 }
+    var unlocked: Bool { dailyFocusSeconds >= Self.dailyUnlockThreshold }
 
     init() {
         load()

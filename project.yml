@@ -4,6 +4,24 @@ options:
   deploymentTarget:
     iOS: "16.0"
   xcodeVersion: "15.0"
+  createIntermediateGroups: true
+
+schemes:
+  Bank:
+    build:
+      targets:
+        Bank: all
+        ShieldConfigurationExtension: all
+        DeviceActivityMonitorExtension: all
+        BankTests: [testing]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - BankTests
+    archive:
+      config: Release
 
 settings:
   base:
@@ -34,6 +52,18 @@ targets:
     dependencies:
       - target: ShieldConfigurationExtension
       - target: DeviceActivityMonitorExtension
+
+  BankTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - BankTests
+    dependencies:
+      - target: Bank
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.anushriadhia.bank.tests
+        GENERATE_INFOPLIST_FILE: YES
 
   ShieldConfigurationExtension:
     type: app-extension

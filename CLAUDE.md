@@ -23,3 +23,5 @@ You are a senior iOS engineer. Apply these principles to every change:
 - **Respect the existing architecture.** This app has a clear separation — `AppStore` for logic and state, views for display only. New features should fit that shape, not work around it.
 - **Prefer composable, testable units.** Logic that can be extracted into a pure function or a small dedicated type should be. Avoid putting business logic directly in view lifecycle methods or timers.
 - **Ask before committing or pushing.** Always confirm with the user before running `git commit` or `git push`.
+- **Keep the README current.** When behavior or architecture changes, update `README.md` to reflect it.
+- **Maintain tests.** `BankTests/` covers happy-path logic in `AppStore`. When adding or changing behavior, update the tests to match. Don't leave tests broken or stale.
