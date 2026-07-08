@@ -11,8 +11,6 @@ struct ContentView: View {
             Color.black.ignoresSafeArea()
 
             VStack(spacing: 0) {
-                Spacer()
-
                 // MARK: - Bank Balance
                 VStack(spacing: 12) {
                     Text("bank")
@@ -21,8 +19,8 @@ struct ContentView: View {
                         .tracking(2)
 
                     Text(formatSigned(store.bankDisplay))
-                        .font(.system(size: 64, weight: .regular, design: .monospaced))
-                        .foregroundColor(store.bankDisplay < 0 ? Color(white: 0.45) : .white)
+                        .font(.system(size: 34, weight: .regular, design: .monospaced))
+                        .foregroundColor(store.bankDisplay < 0 ? Color(white: 0.38) : Color(white: 0.55))
                         .tracking(4)
 
                     if store.unlocked {
@@ -45,6 +43,7 @@ struct ContentView: View {
                         }
                     }
                 }
+                .padding(.top, 60)
 
                 Spacer()
 
