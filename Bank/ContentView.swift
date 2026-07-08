@@ -31,17 +31,10 @@ struct ContentView: View {
                                 .font(.system(size: 14, design: .monospaced))
                                 .foregroundColor(Color(white: 0.4))
                         } else {
-                            Button(action: store.toggleScrolling) {
-                                Text(store.scrolling ? "Stop Scrolling" : "Start Scrolling")
-                                    .font(.system(size: 16, design: .monospaced))
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal, 32)
-                                    .padding(.vertical, 14)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 4)
-                                            .stroke(Color(white: 0.2), lineWidth: 1)
-                                    )
-                            }
+                            Button(store.scrolling ? "Stop Scrolling" : "Start Scrolling", action: store.toggleScrolling)
+                                .buttonStyle(.bordered)
+                                .tint(.white)
+                                .font(.system(size: 16, design: .monospaced))
                         }
                     }
                 }
@@ -82,17 +75,10 @@ struct ContentView: View {
                         .foregroundColor(.white)
                         .tracking(4)
 
-                    Button(action: store.toggleFocus) {
-                        Text(store.focusRunning ? "Stop" : "Start")
-                            .font(.system(size: 16, design: .monospaced))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 32)
-                            .padding(.vertical, 14)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 4)
-                                    .stroke(Color(white: 0.2), lineWidth: 1)
-                            )
-                    }
+                    Button(store.focusRunning ? "Stop" : "Start", action: store.toggleFocus)
+                        .buttonStyle(.bordered)
+                        .tint(.white)
+                        .font(.system(size: 16, design: .monospaced))
                 }
 
                 Spacer()
@@ -100,37 +86,32 @@ struct ContentView: View {
                 // MARK: - Bottom buttons
                 VStack(spacing: 24) {
                     if store.authorized {
-                        Button(action: { showAppPicker = true }) {
-                            Text(store.selectedApps.applicationTokens.isEmpty ? "Select Apps to Block" : "Change Blocked Apps")
-                                .font(.system(size: 14, design: .monospaced))
-                                .foregroundColor(Color(white: 0.4))
+                        Button(store.selectedApps.applicationTokens.isEmpty ? "Select Apps to Block" : "Change Blocked Apps") {
+                            showAppPicker = true
                         }
+                        .font(.system(size: 14, design: .monospaced))
+                        .foregroundColor(Color(white: 0.4))
                     }
 
-                    Button(action: { showLog = true }) {
-                        Text("Show Log")
-                            .font(.system(size: 14, design: .monospaced))
-                            .foregroundColor(Color(white: 0.4))
-                    }
+                    Button("Show Log") { showLog = true }
+                        .font(.system(size: 14, design: .monospaced))
+                        .foregroundColor(Color(white: 0.4))
                 }
                 .padding(.bottom, 20)
             }
             .padding(.horizontal, 32)
-
-            // MARK: - Log overlay
-            if showLog {
-                LogOverlay(
-                    sessions: store.log,
-                    activities: store.activities,
-                    onClose: { showLog = false },
-                    onUpdateActivity: { id, activity in store.updateSessionActivity(sessionId: id, activity: activity) },
-                    onAddActivity: { name in store.addActivity(name) }
-                )
-            }
         }
         .familyActivityPicker(isPresented: $showAppPicker, selection: $store.selectedApps)
         .onChange(of: store.selectedApps) { _ in
             store.saveSelectedApps()
+        }
+        .sheet(isPresented: $showLog) {
+            LogSheet(
+                sessions: store.log,
+                activities: store.activities,
+                onUpdateActivity: { id, activity in store.updateSessionActivity(sessionId: id, activity: activity) },
+                onAddActivity: { name in store.addActivity(name) }
+            )
         }
         .alert("New Activity", isPresented: $showAddActivity) {
             TextField("Activity name", text: $newActivityName)
@@ -159,10 +140,9 @@ struct ContentView: View {
     }
 }
 
-struct LogOverlay: View {
+struct LogSheet: View {
     let sessions: [Session]
     let activities: [String]
-    let onClose: () -> Void
     let onUpdateActivity: (UUID, String?) -> Void
     let onAddActivity: (String) -> Void
 
@@ -170,30 +150,32 @@ struct LogOverlay: View {
     @State private var newActivityName = ""
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Color.black.opacity(0.8)
-                .ignoresSafeArea()
-                .onTapGesture { onClose() }
+        NavigationStack {
+            Group {
+                if sessions.isEmpty {
+                    Text("No sessions yet")
+                        .font(.system(size: 14, design: .monospaced))
+                        .foregroundColor(Color(white: 0.53))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView {
+                        Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 0) {
+                            GridRow {
+                                Text("date / time")
+                                Text("duration")
+                                Text("activity")
+                            }
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(Color(white: 0.35))
+                            .padding(.vertical, 8)
+                            .gridCellAnchor(.leading)
 
-            VStack(spacing: 0) {
-                ScrollView {
-                    if sessions.isEmpty {
-                        Text("No sessions yet")
-                            .font(.system(size: 14, design: .monospaced))
-                            .foregroundColor(Color(white: 0.53))
-                            .padding(.top, 40)
-                    } else {
-                        LazyVStack(spacing: 0) {
+                            Divider().gridCellColumns(3)
+
                             ForEach(sessions) { session in
-                                VStack(alignment: .leading, spacing: 4) {
-                                    HStack {
-                                        Text(session.formattedDate)
-                                        Spacer()
-                                        Text(session.formattedDuration)
-                                    }
-                                    .font(.system(size: 14, design: .monospaced))
-                                    .foregroundColor(Color(white: 0.53))
-
+                                GridRow {
+                                    Text(session.formattedDateTime)
+                                    Text(session.formattedDuration)
                                     Picker("", selection: Binding(
                                         get: { session.activity ?? "" },
                                         set: { newValue in
@@ -212,58 +194,41 @@ struct LogOverlay: View {
                                         Text("+ New Activity").tag("__new__")
                                     }
                                     .pickerStyle(.menu)
-                                    .font(.system(size: 12, design: .monospaced))
-                                    .foregroundColor(Color(white: 0.4))
+                                    .font(.system(size: 14, design: .monospaced))
+                                    .foregroundColor(session.activity == nil ? Color(white: 0.35) : Color(white: 0.53))
                                 }
+                                .font(.system(size: 14, design: .monospaced))
+                                .foregroundColor(Color(white: 0.53))
                                 .padding(.vertical, 12)
-                                .overlay(
-                                    Rectangle()
-                                        .frame(height: 0.5)
-                                        .foregroundColor(Color(white: 0.13)),
-                                    alignment: .bottom
-                                )
+                                .gridCellAnchor(.leading)
+
+                                Divider().gridCellColumns(3)
                             }
                         }
+                        .padding(.horizontal, 24)
                     }
                 }
-                .alert("New Activity", isPresented: Binding(
-                    get: { showAddActivityForSession != nil },
-                    set: { if !$0 { showAddActivityForSession = nil } }
-                )) {
-                    TextField("Activity name", text: $newActivityName)
-                    Button("Add") {
-                        if let sessionId = showAddActivityForSession {
-                            onAddActivity(newActivityName)
-                            onUpdateActivity(sessionId, newActivityName.trimmingCharacters(in: .whitespaces))
-                        }
-                        newActivityName = ""
-                        showAddActivityForSession = nil
-                    }
-                    Button("Cancel", role: .cancel) {
-                        newActivityName = ""
-                        showAddActivityForSession = nil
-                    }
-                }
-
-                Button(action: onClose) {
-                    Text("Close")
-                        .font(.system(size: 16, design: .monospaced))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 32)
-                        .padding(.vertical, 14)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 4)
-                                .stroke(Color(white: 0.2), lineWidth: 1)
-                        )
-                }
-                .padding(.top, 16)
             }
-            .padding(24)
-            .frame(maxHeight: UIScreen.main.bounds.height * 0.7)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(white: 0.067))
-            )
+            .navigationTitle("Log")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+        .alert("New Activity", isPresented: Binding(
+            get: { showAddActivityForSession != nil },
+            set: { if !$0 { showAddActivityForSession = nil } }
+        )) {
+            TextField("Activity name", text: $newActivityName)
+            Button("Add") {
+                if let sessionId = showAddActivityForSession {
+                    onAddActivity(newActivityName)
+                    onUpdateActivity(sessionId, newActivityName.trimmingCharacters(in: .whitespaces))
+                }
+                newActivityName = ""
+                showAddActivityForSession = nil
+            }
+            Button("Cancel", role: .cancel) {
+                newActivityName = ""
+                showAddActivityForSession = nil
+            }
         }
     }
 }

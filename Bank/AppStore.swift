@@ -259,6 +259,12 @@ struct Session: Codable, Identifiable {
         return f.string(from: date)
     }
 
+    var formattedDateTime: String {
+        let f = DateFormatter()
+        f.dateFormat = "MMM d, h:mm a"
+        return f.string(from: date)
+    }
+
     var formattedDuration: String {
         let m = durationSeconds / 60
         let s = durationSeconds % 60
