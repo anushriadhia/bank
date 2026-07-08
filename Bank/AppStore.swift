@@ -15,6 +15,9 @@ final class AppStore: ObservableObject {
     @Published var focusRunning: Bool = false
     @Published var focusElapsed: Int = 0
 
+    @Published var activities: [String] = []
+    @Published var selectedActivity: String? = nil
+
     @Published var scrolling: Bool = false
 
     @Published var selectedApps = FamilyActivitySelection()
@@ -72,6 +75,9 @@ final class AppStore: ObservableObject {
            decoded.date == Self.todayKey() {
             dailyFocusSeconds = decoded.seconds
         }
+
+        activities = defaults.stringArray(forKey: "activities") ?? []
+        selectedActivity = defaults.string(forKey: "lastActivity")
 
         if authorized {
             if let data = defaults.data(forKey: "selectedApps"),
@@ -175,7 +181,7 @@ final class AppStore: ObservableObject {
         balance += earned
 
         if earned > 0 {
-            let session = Session(date: Date(), durationSeconds: earned, earnedMinutes: earned / 60)
+            let session = Session(date: Date(), durationSeconds: earned, earnedMinutes: earned / 60, activity: selectedActivity)
             log.insert(session, at: 0)
         }
 
@@ -210,6 +216,27 @@ final class AppStore: ObservableObject {
         stopDisplayTimer()
     }
 
+    // MARK: - Activities
+
+    func addActivity(_ name: String) {
+        let trimmed = name.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty, !activities.contains(trimmed) else { return }
+        activities.append(trimmed)
+        defaults.set(activities, forKey: "activities")
+        selectActivity(trimmed)
+    }
+
+    func selectActivity(_ name: String?) {
+        selectedActivity = name
+        defaults.set(name, forKey: "lastActivity")
+    }
+
+    func updateSessionActivity(sessionId: UUID, activity: String?) {
+        guard let index = log.firstIndex(where: { $0.id == sessionId }) else { return }
+        log[index].activity = activity
+        save()
+    }
+
     // MARK: - Helpers
 
     static func todayKey() -> String {
@@ -224,6 +251,7 @@ struct Session: Codable, Identifiable {
     let date: Date
     let durationSeconds: Int
     let earnedMinutes: Int
+    var activity: String?
 
     var formattedDate: String {
         let f = DateFormatter()

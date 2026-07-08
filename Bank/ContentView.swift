@@ -5,6 +5,8 @@ struct ContentView: View {
     @EnvironmentObject var store: AppStore
     @State private var showLog = false
     @State private var showAppPicker = false
+    @State private var showAddActivity = false
+    @State private var newActivityName = ""
 
     var body: some View {
         ZStack {
@@ -49,6 +51,32 @@ struct ContentView: View {
 
                 // MARK: - Focus Timer
                 VStack(spacing: 20) {
+                    // MARK: - Activity Picker
+                    HStack(spacing: 10) {
+                        Text("Activity")
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(Color(white: 0.35))
+                            .tracking(2)
+
+                        Picker("", selection: Binding(
+                            get: { store.selectedActivity ?? "" },
+                            set: { store.selectActivity($0.isEmpty ? nil : $0) }
+                        )) {
+                            Text("None").tag("")
+                            ForEach(store.activities, id: \.self) { activity in
+                                Text(activity).tag(activity)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .font(.system(size: 14, design: .monospaced))
+
+                        Button(action: { showAddActivity = true }) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 12))
+                                .foregroundColor(Color(white: 0.35))
+                        }
+                    }
+
                     Text(formatTime(store.focusElapsed))
                         .font(.system(size: 64, weight: .regular, design: .monospaced))
                         .foregroundColor(.white)
@@ -91,12 +119,28 @@ struct ContentView: View {
 
             // MARK: - Log overlay
             if showLog {
-                LogOverlay(sessions: store.log, onClose: { showLog = false })
+                LogOverlay(
+                    sessions: store.log,
+                    activities: store.activities,
+                    onClose: { showLog = false },
+                    onUpdateActivity: { id, activity in store.updateSessionActivity(sessionId: id, activity: activity) },
+                    onAddActivity: { name in store.addActivity(name) }
+                )
             }
         }
         .familyActivityPicker(isPresented: $showAppPicker, selection: $store.selectedApps)
         .onChange(of: store.selectedApps) { _ in
             store.saveSelectedApps()
+        }
+        .alert("New Activity", isPresented: $showAddActivity) {
+            TextField("Activity name", text: $newActivityName)
+            Button("Add") {
+                store.addActivity(newActivityName)
+                newActivityName = ""
+            }
+            Button("Cancel", role: .cancel) {
+                newActivityName = ""
+            }
         }
     }
 
@@ -117,7 +161,13 @@ struct ContentView: View {
 
 struct LogOverlay: View {
     let sessions: [Session]
+    let activities: [String]
     let onClose: () -> Void
+    let onUpdateActivity: (UUID, String?) -> Void
+    let onAddActivity: (String) -> Void
+
+    @State private var showAddActivityForSession: UUID? = nil
+    @State private var newActivityName = ""
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -135,15 +185,36 @@ struct LogOverlay: View {
                     } else {
                         LazyVStack(spacing: 0) {
                             ForEach(sessions) { session in
-                                HStack {
-                                    Text(session.formattedDate)
-                                    Spacer()
-                                    Text(session.formattedDuration)
-                                    Spacer()
-                                    Text("+\(session.earnedMinutes)m")
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack {
+                                        Text(session.formattedDate)
+                                        Spacer()
+                                        Text(session.formattedDuration)
+                                    }
+                                    .font(.system(size: 14, design: .monospaced))
+                                    .foregroundColor(Color(white: 0.53))
+
+                                    Picker("", selection: Binding(
+                                        get: { session.activity ?? "" },
+                                        set: { newValue in
+                                            if newValue == "__new__" {
+                                                showAddActivityForSession = session.id
+                                            } else {
+                                                onUpdateActivity(session.id, newValue.isEmpty ? nil : newValue)
+                                            }
+                                        }
+                                    )) {
+                                        Text("—").tag("")
+                                        ForEach(activities, id: \.self) { activity in
+                                            Text(activity).tag(activity)
+                                        }
+                                        Divider()
+                                        Text("+ New Activity").tag("__new__")
+                                    }
+                                    .pickerStyle(.menu)
+                                    .font(.system(size: 12, design: .monospaced))
+                                    .foregroundColor(Color(white: 0.4))
                                 }
-                                .font(.system(size: 14, design: .monospaced))
-                                .foregroundColor(Color(white: 0.53))
                                 .padding(.vertical, 12)
                                 .overlay(
                                     Rectangle()
@@ -153,6 +224,24 @@ struct LogOverlay: View {
                                 )
                             }
                         }
+                    }
+                }
+                .alert("New Activity", isPresented: Binding(
+                    get: { showAddActivityForSession != nil },
+                    set: { if !$0 { showAddActivityForSession = nil } }
+                )) {
+                    TextField("Activity name", text: $newActivityName)
+                    Button("Add") {
+                        if let sessionId = showAddActivityForSession {
+                            onAddActivity(newActivityName)
+                            onUpdateActivity(sessionId, newActivityName.trimmingCharacters(in: .whitespaces))
+                        }
+                        newActivityName = ""
+                        showAddActivityForSession = nil
+                    }
+                    Button("Cancel", role: .cancel) {
+                        newActivityName = ""
+                        showAddActivityForSession = nil
                     }
                 }
 
