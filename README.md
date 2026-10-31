@@ -6,7 +6,7 @@ A screen time budgeting app for iOS. You earn minutes by focusing, then spend th
 
 Bank treats attention like currency. Focus sessions deposit minutes into your balance. Once you've hit the daily 15-minute focus minimum, you can "withdraw" by tapping Start Scrolling — this unblocks your selected apps and drains the balance in real time. When it hits zero, shields go back up. The inspiration? Personal for us, as people trying to avoid doom scrolling and work on our goals. But also a reel we saw by @queencitytrends where she said that a rule in her house is that her kids get one minute of screen time for every minute of work time. Ironic that we were inspired while doom scrolling, huh?
 
-## Product Thinking
+## Problem Thinking
 
 When it comes to Focus Bank, the goal isn't to eliminate screen time or scroll time. It's to make it intentional and to use dopamine as a reward, in today's world where a dopamine-hit from scrolling is so easy to get.
 
@@ -15,19 +15,15 @@ Problems that we discussed:
 - Scrolling was affecting our attention and ability to spend time on things we enjoy or would push our personal goals forward.
 - Once a scroll started, it was so hard to stop and typically resulted in minutes to hours of time.
 - Scrolling occurred at different times of day for us (key times were morning right when we wake up, or the night while trying to go to bed). 
-- We had both done scrolling detoxes for a month, but got right back into after.
+- We had both done scrolling detoxes for a month, but got right back into scrolling after.
 - We had used apps like BePresent that provided time-limits on apps, but we tended to bypass the time limits reguarly.
 
-**Hypothesis: We believe that making screen time earnable, rather than simply restricting it, can help people build a healthier relationship with their phones.
+## Hypothesis
+We believe that making screen time earnable, rather than simply restricting it, can help people build a healthier relationship with their phones.
 
 1. Make starting easier. By turning focus into an achievable, immediate reward, Bank lowers the barrier to starting work on personal goals.
 
-2. Build momentum. Once users begin focusing, they're more likely to continue, make progress toward their goals, and choose how they spend their attention rather than defaulting to scrolling. **
-
-Bank uses a simple tradeoff: earn time by focusing, then spend it however you want. The 15-minute daily minimum creates a small barrier to mindless scrolling without making the app feel punitive.
-
-The core question: Does earning screen time make it easier to start focusing, or does it just create another thing to manage?
-
+2. Build momentum. Once users begin focusing, they're more likely to continue, make progress toward their goals, and choose how they spend their attention rather than defaulting to scrolling. 
 
 ## How it works
 
