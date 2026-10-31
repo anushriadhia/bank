@@ -4,7 +4,7 @@ A screen time budgeting app for iOS. You earn minutes by focusing, then spend th
 
 ## Concept
 
-Bank treats attention like currency. Focus sessions deposit minutes into your balance. Once you've hit the daily 15-minute focus minimum, you can "withdraw" by tapping Start Scrolling — this unblocks your selected apps and drains the balance in real time. When it hits zero, shields go back up. The inspiration? Personal for us, as people trying to avoid doom scrolling and work on our goals. But also a reel we saw by @queencitytrends where she said that a rule in her house is that her kids get one minute of screen time for every minute of work time. Ironic that we were inspired while doom scrolling, huh?
+Focus Bank treats attention like currency. Focus sessions deposit minutes into your balance. Once you've hit the daily 15-minute focus minimum, you can "withdraw" by tapping Start Scrolling — this unblocks your selected apps and drains the balance in real time. When it hits zero, shields go back up. The inspiration? Personal for us, as people trying to avoid doom scrolling and work on our goals. But also a reel we saw by @queencitytrends where she said that a rule in her house is that her kids get one minute of screen time for every minute of work time. Ironic that we were inspired while doom scrolling, huh?
 
 ## Problem Thinking
 
@@ -26,6 +26,20 @@ We believe that making screen time earnable, rather than simply restricting it, 
 ## Product/Feature Thinking
 
 When it comes to Focus Bank, the goal isn't to eliminate screen time or scroll time. It's to make it intentional and to use dopamine as a reward, in today's world where a dopamine-hit from scrolling is so easy to get.
+
+Feature 1: Scroll/Screen Time should be earned not restricted
+- Focus time = banked scroll time
+- As a user, I should be able to Bank scroll/screen time for every minute I spend with my Focus timer started. This is earned on the minute (30 seconds = 0 minutes of Banked time, 1 min 30 sec = 1 minute of Banked Time).
+- As a user, if my Bank has any amount of time, my "restricted apps" should be openable and usable. If the Bank has no time, then the "restricted apps" should be unopenable/unusable.
+- As a user, I should be able to choose the apps on my phone that I would like to restrict. I should be able to edit this at any time.
+
+  * Note: Just because the focus timer is on, does not mean that the user is necessarily focusing. We see this as OK. At least they are taking a break from time-sink apps.
+    
+Feature 2: Scroll/Screen Time should require some activation energy, not be the first easy go-to.
+
+- As a user, I should start my day (a day is midnight - 11:59pm) with negative 15 minutes of Banked Screen Time.
+
+Other future features: Users can label their Focus Sprints to keep track of what they're working on, Data and stats of scroll time and focus time, Providing work for folks (math problems for kids, etc.) to earn screen time 
 
 ## How it works
 
