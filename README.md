@@ -4,7 +4,7 @@ A screen time budgeting app for iOS. You earn minutes by focusing, then spend th
 
 ## Concept
 
-Bank treats attention like currency. Focus sessions deposit minutes into your balance. Once you've hit the daily 15-minute focus minimum, you can "withdraw" by tapping Start Scrolling — this unblocks your selected apps and drains the balance in real time. When it hits zero, shields go back up.
+Bank treats attention like currency. Focus sessions deposit minutes into your balance. Once you've hit the daily 15-minute focus minimum, you can "withdraw" by tapping Start Scrolling — this unblocks your selected apps and drains the balance in real time. When it hits zero, shields go back up. The inspiration? Personal for us, as people trying to avoid doom scrolling and work on our goals. But also a reel we saw by @queencitytrends where she said that a rule in her house is that her kids get one minute of screen time for every minute of work time. Ironic that we were inspired while doom scrolling, huh?
 
 ## How it works
 
