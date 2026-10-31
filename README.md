@@ -29,7 +29,7 @@ When it comes to Focus Bank, the goal isn't to eliminate screen time or scroll t
 
 Feature 1: Scroll/Screen Time should be earned not restricted
 - Focus time = banked scroll time
-- As a user, I should be able to Bank scroll/screen time for every minute I spend with my Focus timer started. This is earned on the minute (30 seconds = 0 minutes of Banked time, 1 min 30 sec = 1 minute of Banked Time).
+- As a user, I should be able to Bank scroll/screen time for the time I spend with my Focus timer started. 
 - As a user, if my Bank has any amount of time, my "restricted apps" should be openable and usable. If the Bank has no time, then the "restricted apps" should be unopenable/unusable.
 - As a user, I should be able to choose the apps on my phone that I would like to restrict. I should be able to edit this at any time.
 
