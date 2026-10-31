@@ -17,7 +17,7 @@ Problems that we discussed:
 - We had used apps like BePresent that provided time-limits on apps, but we tended to bypass the time limits reguarly.
 
 ## Hypothesis
-We believe that making screen time earnable, rather than simply restricting it, can help people build a healthier relationship with their phones.
+We believe that making screen time earnable, rather than simply restricting it, can help people build a healthier relationship with their phones. This draws a parallel to food dieting - restriction is rarely sustainable.
 
 1. Make starting easier. By turning focus into an achievable, immediate reward, Bank lowers the barrier to starting work on personal goals.
 
