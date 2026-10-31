@@ -8,8 +8,6 @@ Bank treats attention like currency. Focus sessions deposit minutes into your ba
 
 ## Problem Thinking
 
-When it comes to Focus Bank, the goal isn't to eliminate screen time or scroll time. It's to make it intentional and to use dopamine as a reward, in today's world where a dopamine-hit from scrolling is so easy to get.
-
 Problems that we discussed: 
 - It's easy to open apps that allow for time sinks in mindless activity
 - Scrolling was affecting our attention and ability to spend time on things we enjoy or would push our personal goals forward.
@@ -24,6 +22,10 @@ We believe that making screen time earnable, rather than simply restricting it, 
 1. Make starting easier. By turning focus into an achievable, immediate reward, Bank lowers the barrier to starting work on personal goals.
 
 2. Build momentum. Once users begin focusing, they're more likely to continue, make progress toward their goals, and choose how they spend their attention rather than defaulting to scrolling. 
+
+## Product/Feature Thinking
+
+When it comes to Focus Bank, the goal isn't to eliminate screen time or scroll time. It's to make it intentional and to use dopamine as a reward, in today's world where a dopamine-hit from scrolling is so easy to get.
 
 ## How it works
 
