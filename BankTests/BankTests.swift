@@ -103,4 +103,48 @@ final class BankTests: XCTestCase {
         XCTAssertEqual(Int(parts[0]), Calendar.current.component(.year, from: Date()))
         XCTAssertEqual(Int(parts[1]), Calendar.current.component(.month, from: Date()))
     }
+
+    // MARK: - BankSpending (spendable balance used by the shield extensions)
+
+    func testNotSpendableBelowDailyMinimumEvenWithCarriedOverBalance() {
+        // Leftover balance from a previous day, but today's focus minimum isn't met yet.
+        XCTAssertEqual(BankSpending.spendableSeconds(balance: 1200, dailyFocusSeconds: 0), 0)
+    }
+
+    func testSpendableIsBalanceMinusUnlockReserveOnceUnlocked() {
+        XCTAssertEqual(BankSpending.spendableSeconds(balance: 1200, dailyFocusSeconds: 900), 300)
+    }
+
+    func testNothingSpendableAtExactUnlockThreshold() {
+        XCTAssertEqual(BankSpending.spendableSeconds(balance: 900, dailyFocusSeconds: 900), 0)
+    }
+
+    // MARK: - ShieldSync (what syncShieldToSpendableBalance does)
+
+    func testStartsSpendingWhenBalanceBecomesSpendable() {
+        XCTAssertEqual(ShieldSync.action(spendable: 300, scrolling: false, focusRunning: false), .startSpending)
+    }
+
+    func testRunningSpendingSessionStillUnshields() {
+        // Regression: a session marked running used to be skipped entirely, so a shield
+        // re-applied underneath it (e.g. by a focus session) was never removed.
+        XCTAssertEqual(ShieldSync.action(spendable: 300, scrolling: true, focusRunning: false), .keepSpending)
+    }
+
+    func testFocusKeepsAppsShieldedEvenWithSpendableBalance() {
+        XCTAssertEqual(ShieldSync.action(spendable: 300, scrolling: false, focusRunning: true), .leaveShieldedForFocus)
+    }
+
+    func testEndsSpendingWhenNothingIsSpendable() {
+        XCTAssertEqual(ShieldSync.action(spendable: 0, scrolling: true, focusRunning: false), .endSpending)
+    }
+
+    func testShieldsWhenNothingIsSpendable() {
+        XCTAssertEqual(ShieldSync.action(spendable: 0, scrolling: false, focusRunning: false), .shield)
+    }
+
+    func testSpendableNeverNegative() {
+        // Balance below the reserve (e.g. after a prior spend session) shouldn't go negative.
+        XCTAssertEqual(BankSpending.spendableSeconds(balance: 500, dailyFocusSeconds: 900), 0)
+    }
 }

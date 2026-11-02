@@ -7,6 +7,13 @@ Read Apple's official docs before modifying shield or authorization code:
 
 These APIs change between iOS versions. Check the deployment target (iOS 16.2) before using newer APIs. (Bumped from 16.0 to 16.2 to use ActivityKit's Live Activities, which require 16.1+, and the non-deprecated request/end API specifically requires 16.2+.)
 
+# Extension point identifiers
+
+iOS silently discards an extension whose `NSExtensionPointIdentifier` is wrong — the build succeeds, but the extension never runs (the device log shows `installd` "missing extension cache entry"). The correct values in `project.yml` are:
+- DeviceActivity monitor: `com.apple.deviceactivity.monitor-extension`
+- Shield configuration: `com.apple.ManagedSettingsUI.shield-configuration-service`
+- Shield action: `com.apple.ManagedSettings.shield-action-service`
+
 # XcodeGen
 
 The Xcode project is generated from `project.yml`. Do not edit `Bank.xcodeproj` directly — it will be overwritten. Add new source files to the correct target directory and regenerate with `xcodegen generate`.

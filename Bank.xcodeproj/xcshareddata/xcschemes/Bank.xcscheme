@@ -43,9 +43,37 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E847AD7ADBCF0F3DD8E978F2"
+               BuildableName = "BankWidgetExtension.appex"
+               BlueprintName = "BankWidgetExtension"
+               ReferencedContainer = "container:Bank.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "6AA9B51BB8C70C86E9C57A68"
                BuildableName = "DeviceActivityMonitorExtension.appex"
                BlueprintName = "DeviceActivityMonitorExtension"
+               ReferencedContainer = "container:Bank.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "026D61BE3DF791002AF4A4B6"
+               BuildableName = "ShieldActionExtension.appex"
+               BlueprintName = "ShieldActionExtension"
                ReferencedContainer = "container:Bank.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

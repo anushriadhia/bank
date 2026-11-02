@@ -38,11 +38,16 @@ private struct BankTimerText: View {
     var body: some View {
         switch state.kind {
         case .focus:
+            // Focus time really is continuous wall-clock time, so a count-up is accurate.
             Text(state.startDate, style: .timer)
         case .scrolling:
-            if let endDate = state.endDate {
-                Text(timerInterval: state.startDate...endDate, countsDown: true)
-            }
+            // Spending now drains based on actual app usage, which this widget has no way
+            // to observe live (only "session active" / "session ended" ever gets reported)
+            // — a wall-clock count-up here would look like a countdown tied to balance but
+            // keep climbing even while the blocked app is closed, which is actively
+            // misleading. Show a plain status instead of a number implying precision we
+            // don't have.
+            Image(systemName: "hourglass")
         }
     }
 }

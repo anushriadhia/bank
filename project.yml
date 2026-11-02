@@ -12,6 +12,7 @@ schemes:
       targets:
         Bank: all
         ShieldConfigurationExtension: all
+        ShieldActionExtension: all
         DeviceActivityMonitorExtension: all
         BankWidgetExtension: all
         BankTests: [testing]
@@ -27,6 +28,7 @@ schemes:
 settings:
   base:
     SWIFT_VERSION: "5.9"
+    DEVELOPMENT_TEAM: 56K8S9J6LZ
 
 targets:
   Bank:
@@ -38,6 +40,7 @@ targets:
     entitlements:
       path: Bank/Bank.entitlements
       properties:
+        com.apple.developer.family-controls: true
         com.apple.security.application-groups:
           - group.com.anushriadhia.bank
     info:
@@ -54,6 +57,7 @@ targets:
         INFOPLIST_KEY_NSFamilyControlsUsageDescription: "Bank needs Screen Time access to block apps during focus sessions and unblock them when you spend your balance."
     dependencies:
       - target: ShieldConfigurationExtension
+      - target: ShieldActionExtension
       - target: DeviceActivityMonitorExtension
       - target: BankWidgetExtension
 
@@ -74,36 +78,48 @@ targets:
     platform: iOS
     sources:
       - ShieldConfigurationExtension
-    entitlements:
-      path: ShieldConfigurationExtension/ShieldConfigurationExtension.entitlements
-      properties:
-        com.apple.security.application-groups:
-          - group.com.anushriadhia.bank
     info:
       path: ShieldConfigurationExtension/Info.plist
       properties:
         NSExtension:
-          NSExtensionPointIdentifier: com.apple.ManagedSettingsUI.shield-configuration
+          NSExtensionPointIdentifier: com.apple.ManagedSettingsUI.shield-configuration-service
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShieldConfigurationExtension
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.anushriadhia.bank.ShieldConfiguration
+
+  ShieldActionExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - ShieldActionExtension
+    info:
+      path: ShieldActionExtension/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.ManagedSettings.shield-action-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShieldActionExtension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.anushriadhia.bank.ShieldAction
 
   DeviceActivityMonitorExtension:
     type: app-extension
     platform: iOS
     sources:
       - DeviceActivityMonitorExtension
+      - Shared
     entitlements:
       path: DeviceActivityMonitorExtension/DeviceActivityMonitorExtension.entitlements
       properties:
+        com.apple.developer.family-controls: true
         com.apple.security.application-groups:
           - group.com.anushriadhia.bank
     info:
       path: DeviceActivityMonitorExtension/Info.plist
       properties:
         NSExtension:
-          NSExtensionPointIdentifier: com.apple.deviceactivity.monitor
+          NSExtensionPointIdentifier: com.apple.deviceactivity.monitor-extension
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension
     settings:
       base:
