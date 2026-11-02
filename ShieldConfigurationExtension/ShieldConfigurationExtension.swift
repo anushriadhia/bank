@@ -2,6 +2,9 @@ import ManagedSettings
 import ManagedSettingsUI
 import UIKit
 
+// A shield only ever shows once spendable balance has actually run out — AppStore
+// proactively removes the shield from blocked apps whenever there's spendable balance
+// (see AppStore.syncShieldToSpendableBalance), so this never needs to offer a spend action.
 class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     override func configuration(shielding application: Application) -> ShieldConfiguration {
         ShieldConfiguration(

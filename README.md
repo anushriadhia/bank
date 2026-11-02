@@ -4,7 +4,7 @@ A screen time budgeting app for iOS. You earn minutes by focusing, then spend th
 
 ## Concept
 
-Focus Bank treats attention like currency. Focus sessions deposit minutes into your balance. Once you've hit the daily 15-minute focus minimum, you can "withdraw" by tapping Start Scrolling — this unblocks your selected apps and drains the balance in real time. When it hits zero, shields go back up. The inspiration? Personal for us, as people trying to avoid doom scrolling and work on our goals. But also a reel we saw by @queencitytrends where she said that a rule in her house is that her kids get one minute of screen time for every minute of work time. Ironic that we were inspired while doom scrolling, huh?
+Focus Bank treats attention like currency. Focus sessions deposit minutes into your balance. Once you've hit the daily 15-minute focus minimum, your selected apps unblock automatically — no separate "withdraw" step — and the balance drains in real time while you're actually using them. When it hits zero, shields go back up. The inspiration? Personal for us, as people trying to avoid doom scrolling and work on our goals. But also a reel we saw by @queencitytrends where she said that a rule in her house is that her kids get one minute of screen time for every minute of work time. Ironic that we were inspired while doom scrolling, huh?
 
 ## Problem Thinking
 
@@ -43,54 +43,64 @@ Other future features: Users can label their Focus Sprints to keep track of what
 
 ## How it works
 
-**Balance** (top of screen) — shows available time in `MM:SS` monospace format, draining per-second when scrolling is active. Before completing 15 minutes of focus for the day, shows a countdown like `12:00 to first unlock`. Once unlocked, a Start Scrolling / Stop Scrolling button appears. When balance reaches zero, shows "Bank empty."
+**Balance** (top of screen) — shows available time in `MM:SS` monospace format. A "spending — apps unlocked" indicator appears while a spending session is active. Before completing 15 minutes of focus for the day, shows a countdown like `12:00 to first unlock`. When balance reaches zero, shows "Bank empty."
 
 **Focus timer** (center) — a stopwatch. Press Start to begin a focus session — selected apps are shielded while focusing. Press Stop to end it. Whole earned minutes (`floor(elapsed / 60)`) are added to the balance as seconds. The elapsed time also counts toward the daily 15-minute unlock requirement.
 
-**Select Apps to Block** (bottom) — opens the system `FamilyActivityPicker` to choose which apps get shielded. Selection persists across launches.
+**Opening a blocked app** — there is no button or interstitial. Whenever there's spendable balance, blocked apps are proactively unshielded — tapping one opens it immediately, same as any other app. Balance drains based on actual usage of the blocked apps (tracked by iOS's own Screen Time accounting, not wall-clock time), so it only counts down while you're actually in one of them — closing it pauses the drain. Once accumulated usage reaches the spendable amount, the app is shielded again automatically. If balance is already zero, blocked apps show the normal "Blocked" shield.
+
+**Menu → Apps to Block** (bottom) — opens the system `FamilyActivityPicker` to choose which apps get shielded. Selection persists across launches.
 
 **Show Log** (bottom) — opens a bottom sheet with a scrollable list of past sessions (date, duration, minutes earned), most recent first.
 
 ## Architecture
 
-Native SwiftUI app with three extensions. No third-party dependencies.
+Native SwiftUI app with four extensions. No third-party dependencies.
 
 ### Targets
 
 | Target | Purpose |
 |--------|---------|
-| `Bank` | Main app — UI, timer logic, shield management |
-| `ShieldConfigurationExtension` | Customizes the block screen shown over shielded apps |
-| `DeviceActivityMonitorExtension` | Handles scheduled device activity events |
-| `BankWidgetExtension` | Live Activity showing the current focus/scrolling timer on the Lock Screen and Dynamic Island |
+| `Bank` | Main app — UI, timer logic, shield management, proactively unshields/schedules spending sessions |
+| `ShieldConfigurationExtension` | Customizes the block screen shown over shielded apps — always static copy, since a shield only ever appears once balance is already fully spent |
+| `ShieldActionExtension` | Dismiss-only handler for the shield's button — there's nothing to grant, so it just closes the shield |
+| `DeviceActivityMonitorExtension` | Re-shields and zeroes the balance once real usage of the blocked apps reaches the spendable amount |
+| `BankWidgetExtension` | Live Activity showing the current focus/scrolling session on the Lock Screen and Dynamic Island |
 
 ### Frameworks
 
 - **FamilyControls** — authorization to use Screen Time APIs, `FamilyActivityPicker` for app selection
 - **ManagedSettings** — `ManagedSettingsStore` to apply/remove shields on selected apps
-- **DeviceActivity** — extension point for monitoring device activity schedules
+- **DeviceActivity** — `DeviceActivityEvent` usage-threshold monitoring is the core enforcement mechanism: it's the only channel a third-party app has into *actual* app usage (Apple restricts this for privacy), so it's what makes "drains only while the app is open" possible at all
 - **ActivityKit** — Live Activities for the Lock Screen / Dynamic Island
 
 ### State
 
-All state persists via `UserDefaults` with App Group `group.com.bank.app` (shared between main app and extensions).
+All state persists via `UserDefaults` with App Group `group.com.anushriadhia.bank` (shared between `Bank` and `DeviceActivityMonitorExtension`) — this is the only way they communicate, since they run in separate processes. `ShieldConfigurationExtension` and `ShieldActionExtension` don't need the App Group at all: they carry no logic, so they never read or write shared state.
 
 | Key | Format | Purpose |
 |-----|--------|---------|
-| `balance` | Int (seconds) | Spendable balance, rolls over indefinitely |
+| `balance` | Int (seconds) | Raw balance, rolls over indefinitely |
 | `log` | `[Session]` JSON | History of completed focus sessions |
 | `dailyFocus` | `{date, seconds}` JSON | Cumulative focus seconds for today's unlock gate |
 | `selectedApps` | `FamilyActivitySelection` JSON | Which apps to shield |
+| `scrolling` | Bool | Whether a spending session is currently active (apps unshielded, usage being monitored) |
+| `scrollStartDate` | Double (`timeIntervalSince1970`) | When the active spending session started |
+| `balanceAtScrollStart` | Int (seconds) | Raw balance at the moment the active session started |
+| `spendableAtScrollStart` | Int (seconds) | How much of that balance was actually spendable (see `BankSpending` below) — this is the usage threshold the session monitors for, and what re-shielding floors against |
 
 The daily focus tracker stores a date string (`YYYY-MM-DD`). On load, if the stored date doesn't match today, the daily counter resets to zero (midnight reset). Balance and log persist independently and never reset.
 
 ### Key logic
 
-- **Unlock gate**: `dailyFocusSeconds >= 900` (15 minutes). Until met, the balance section shows time remaining to unlock instead of the spend button.
+- **Unlock gate**: `dailyFocusSeconds >= 900` (15 minutes). Until met, nothing is spendable regardless of balance.
 - **Earning**: On focus stop, `floor(elapsed / 60)` minutes are added to balance as seconds. Sessions under 60 seconds earn nothing but still count toward the daily unlock.
-- **Spending**: "Start Scrolling" removes shields and starts a 1-second interval that decrements balance. Auto-stops and re-shields at zero.
-- **Shielding**: Focus start and scrolling stop both call `applyShield()`. Scrolling start calls `removeShield()`. The shield screen says "Blocked — Open Bank to earn more time."
-- **Live Activity**: starting/stopping a focus or scrolling session starts/ends an ActivityKit Live Activity mirroring that session's timer. Focus shows a count-up from `focusStartDate`; scrolling shows a deterministic count-down from `balanceAtScrollStart` seconds, ending at a fixed date computed once at session start — the widget's `Text(date:style:.timer)` / `Text(timerInterval:countsDown:)` views update themselves live without further app involvement.
+- **Spendable balance**: `Shared/BankSpending.swift` is the single definition of "how much can actually be spent right now" — `max(0, balance - 900)`, and only once `dailyFocusSeconds` meets today's unlock minimum (a day's worth of carried-over balance alone doesn't make it spendable). `AppStore` and `DeviceActivityMonitorExtension` both call into it rather than each computing their own version, which is what the unlock reserve actually is: balance you've earned but can't spend.
+- **Proactive unshielding**: there's no button — `AppStore.syncShieldToSpendableBalance()` removes the shield the instant balance becomes spendable (checked on launch, on foreground, and right after a focus session ends, which are the only moments balance can change, since earning only ever happens in-app) and starts usage-threshold monitoring for the spendable amount. If spendable balance is ever zero and the shield isn't up, it reapplies it. The decision itself is the pure `ShieldSync.action(spendable:scrolling:focusRunning:)`, so it's unit-tested. A focus session always keeps apps shielded: starting one ends any running spending session (so `scrolling` never claims apps are unshielded while focus has blocked them), and stopping it re-syncs, starting a fresh session with the updated balance. Usage from the interrupted session isn't deducted, because DeviceActivity only reports usage via the threshold event, not as a running total.
+- **Re-shielding is usage-based, not wall-clock**: a `DeviceActivityEvent` with `threshold: DateComponents(second: spendable)` monitors actual time spent in the selected apps/categories — this is the only channel that can see real app usage, which is what makes pausing-when-closed possible. `DeviceActivityMonitorExtension.eventDidReachThreshold` fires once accumulated usage reaches that threshold, re-applies the shield, and floors `balance` at the unlock reserve (`balanceAtScrollStart - spendableAtScrollStart`), landing bank display at exactly "00:00" rather than overshooting negative. `intervalDidEnd` is kept as a backstop re-shield in case the threshold event never fires, at the end of the monitoring window (midnight).
+- **Monitoring window**: runs from now until 23:59:59 today. It ends at midnight because that's when the daily unlock resets, and because a window wrapping past midnight isn't reliably expressible with time-of-day components. Close to midnight the start moves earlier just enough to stay above `DeviceActivityCenter`'s 15-minute minimum (`MonitoringError.intervalTooShort`). On iOS 17.4+ the event is created with `includesPastActivity: false`, so only usage after the session starts counts toward the threshold. The real stop signal is the threshold event, not the window boundary.
+- **Known reliability risk — accepted deliberately**: usage-threshold accounting is reported, across multiple developers and iOS versions, to sometimes fire early, late, or almost immediately regardless of actual usage. There is no alternative API that both reports real app-usage *and* fires with guaranteed precision — Apple doesn't expose that combination to third-party apps at all. This was chosen anyway because it's the only way to get "pauses when you close the app," which was prioritized over guaranteed-exact timing. Needs real on-device observation to know how this actually behaves on a given iOS version.
+- **Live Activity**: `Activity.request()` can't be called from an extension (restricted context) — not an issue now, since sessions are only ever started by `AppStore` itself, which can call it directly. Neither focus nor scrolling has a knowable end time anymore (spending no longer drains on a fixed schedule), so both are simple count-ups from their start date — `startLiveActivity(kind:start:)` is the single entry point for both.
 
 ### File layout
 
@@ -103,12 +113,15 @@ Bank/
   Info.plist
 
 ShieldConfigurationExtension/
-  ShieldConfigurationExtension.swift  — custom block screen appearance
-  ShieldConfigurationExtension.entitlements
+  ShieldConfigurationExtension.swift  — static block screen appearance
+  Info.plist
+
+ShieldActionExtension/
+  ShieldActionExtension.swift  — dismiss-only shield button handler
   Info.plist
 
 DeviceActivityMonitorExtension/
-  DeviceActivityMonitorExtension.swift  — activity schedule callbacks
+  DeviceActivityMonitorExtension.swift  — re-shields once usage reaches the spendable amount
   DeviceActivityMonitorExtension.entitlements
   Info.plist
 
@@ -119,6 +132,9 @@ BankWidgetExtension/
 
 Shared/
   BankActivityAttributes.swift — ActivityAttributes/ContentState shared by Bank and BankWidgetExtension
+  BankSpending.swift            — single definition of "how much is actually spendable right now"
+  DeviceActivityNames.swift     — shared DeviceActivityName/DeviceActivityEvent.Name constants used by AppStore and DeviceActivityMonitorExtension
+  BankLog.swift                 — unified-logging channel for monitoring events (view in Console.app, subsystem com.anushriadhia.bank)
 
 project.yml                 — XcodeGen spec (generates Bank.xcodeproj)
 ```
@@ -142,14 +158,14 @@ open Bank.xcodeproj
 ```
 
 In Xcode:
-1. Set your development team under Signing & Capabilities for all four targets
-2. Enable the "Family Controls" capability on the Bank target (requires applying to Apple for distribution; works in development without approval)
-3. Add the "App Groups" capability with `group.com.bank.app` to `Bank`, `ShieldConfigurationExtension`, and `DeviceActivityMonitorExtension` (`BankWidgetExtension` doesn't need it — Live Activity content is pushed to it directly by ActivityKit, not read from shared storage)
+1. Signing uses the development team set in `project.yml` (`DEVELOPMENT_TEAM`) — change it there, not in Xcode, since `xcodegen generate` overwrites Xcode-side changes
+2. Enable the "Family Controls" capability on the `Bank` and `DeviceActivityMonitorExtension` targets (the extension reapplies the shield and stops monitoring when a spending session ends) (requires applying to Apple for distribution; works in development without approval)
+3. Add the "App Groups" capability with `group.com.anushriadhia.bank` to `Bank` and `DeviceActivityMonitorExtension` (`ShieldConfigurationExtension` and `ShieldActionExtension` carry no logic and don't read shared state at all; `BankWidgetExtension` doesn't need it either — Live Activity content is pushed to it directly by ActivityKit, not read from shared storage)
 4. Build and run on a physical device
 
 ### Entitlement note
 
-The `com.apple.developer.family-controls` entitlement requires [requesting access from Apple](https://developer.apple.com/contact/request/family-controls-distribution) for App Store distribution. During development, you can use it freely with your development provisioning profile.
+The `com.apple.developer.family-controls` entitlement requires [requesting access from Apple](https://developer.apple.com/contact/request/family-controls-distribution) for App Store distribution. During development, you can use it freely with your development provisioning profile — but this requires a paid Apple Developer Program enrollment; a free/personal-team Apple ID cannot use this entitlement at all, even locally, and `requestAuthorization()` will simply fail silently (the app runs, but every Screen Time–gated control stays hidden behind `authorized`).
 
 ## Design
 

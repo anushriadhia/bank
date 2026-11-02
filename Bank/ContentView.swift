@@ -25,6 +25,12 @@ struct ContentView: View {
                         .foregroundColor(store.bankDisplay < 0 ? Color(white: 0.38) : Color(white: 0.55))
                         .tracking(4)
 
+                    if store.scrolling {
+                        Text("spending — apps unlocked")
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(Color(white: 0.35))
+                            .tracking(2)
+                    }
                 }
                 .padding(.top, 60)
 
@@ -84,11 +90,15 @@ struct ContentView: View {
                 // MARK: - Bottom buttons
                 VStack(spacing: 24) {
                     if store.authorized {
-                        Button(store.selectedApps.applicationTokens.isEmpty ? "Select Apps to Block" : "Change Blocked Apps") {
-                            showAppPicker = true
+                        Menu {
+                            Button("Apps to Block") {
+                                showAppPicker = true
+                            }
+                        } label: {
+                            Text(store.selectedApps.applicationTokens.isEmpty ? "Select Apps to Block" : "Change Blocked Apps")
+                                .font(.system(size: 14, design: .monospaced))
+                                .foregroundColor(Color(white: 0.4))
                         }
-                        .font(.system(size: 14, design: .monospaced))
-                        .foregroundColor(Color(white: 0.4))
                     }
 
                     Button(action: { showLog = true }) {
